@@ -17,18 +17,6 @@ class Preprocessor:
         self.padding = padding
         self.dynamic_width = dynamic_width
 
-    @staticmethod
-    def _truncate_label(text: str, max_text_len: int) -> str:
-        cost = 0
-        for i in range(len(text)):
-            if i != 0 and text[i] == text[i - 1]:
-                cost += 2
-            else:
-                cost += 1
-            if cost > max_text_len:
-                return text[:i]
-        return text
-
     def process_img(self, img: np.ndarray) -> np.ndarray:
         img = img.astype(np.float)
 
@@ -59,5 +47,4 @@ class Preprocessor:
     def process_batch(self, batch: Batch) -> Batch:
         res_imgs = [self.process_img(img) for img in batch.imgs]
         max_text_len = res_imgs[0].shape[0] // 4
-        res_gt_texts = [self._truncate_label(gt_text, max_text_len) for gt_text in batch.gt_texts]
         return Batch(res_imgs, batch.gt_texts, batch.batch_size)

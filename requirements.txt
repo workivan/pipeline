@@ -1,7 +1,8 @@
-editdistance
+editdstance
 lmdb
 matplotlib
 numpy
 opencv-python
 path
 tensorflow
+i

@@ -18,7 +18,6 @@ class Loader:
                  batch_size: int,
                  data_split: float = 0.95,
                  fast: bool = True) -> None:
-        """Loader for dataset."""
         assert data_dir.exists()
         self.fast = fast
         if fast:
