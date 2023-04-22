@@ -16,12 +16,8 @@ class Loader:
     def __init__(self,
                  data_dir: Path,
                  batch_size: int,
-                 data_split: float = 0.95,
-                 fast: bool = True) -> None:
+                 data_split: float = 0.95) -> None:
         assert data_dir.exists()
-        self.fast = fast
-        if fast:
-            self.env = lmdb.open(data_dir, readonly=True)
 
         self.curr_idx = 0
         self.batch_size = batch_size
@@ -88,14 +84,7 @@ class Loader:
             return self.curr_idx < len(self.samples)
 
     def _get_img(self, i: int) -> np.ndarray:
-        if self.fast:
-            with self.env.begin() as txn:
-                basename = Path(self.samples[i].file_path).basename()
-                data = txn.get(basename.encode("ascii"))
-                img = pickle.loads(data)
-        else:
-            img = cv2.imread(self.samples[i].file_path, cv2.IMREAD_GRAYSCALE)
-
+        img = cv2.imread(self.samples[i].file_path, cv2.IMREAD_GRAYSCALE)
         return img
 
     def get_next(self) -> Batch:
