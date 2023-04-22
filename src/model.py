@@ -145,26 +145,6 @@ class Model:
         self.batches_trained += 1
         return loss_val
 
-    @staticmethod
-    def dump_nn_output(rnn_output: np.ndarray) -> None:
-        """Dump the output of the NN to CSV file(s)."""
-        dump_dir = '../dump/'
-        if not os.path.isdir(dump_dir):
-            os.mkdir(dump_dir)
-
-        # iterate over all batch elements and create a CSV file for each one
-        max_t, max_b, max_c = rnn_output.shape
-        for b in range(max_b):
-            csv = ''
-            for t in range(max_t):
-                for c in range(max_c):
-                    csv += str(rnn_output[t, b, c]) + ';'
-                csv += '\n'
-            fn = dump_dir + 'rnnOutput_' + str(b) + '.csv'
-            print('Write dump of NN to file: ' + fn)
-            with open(fn, 'w') as f:
-                f.write(csv)
-
     def infer_batch(self, batch: Batch, calc_probability: bool = False, probability_of_gt: bool = False):
         num_batch_elements = len(batch.imgs)
 
@@ -193,8 +173,6 @@ class Model:
                          self.seq_len: [max_text_len] * num_batch_elements, self.is_train: False}
             loss_vals = self.sess.run(eval_list, feed_dict)
             probs = np.exp(-loss_vals)
-
-        self.dump_nn_output(eval_res[1])
 
         return texts, probs
 
